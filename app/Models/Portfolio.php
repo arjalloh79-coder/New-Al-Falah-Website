@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Portfolio extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'title',
+        'category',
+        'target_market',
+        'badge_text',
+        'year',
+        'image',
+        'project_url',
+        'website_url_live',
+        'website_url_staging'
+    ];
+}
