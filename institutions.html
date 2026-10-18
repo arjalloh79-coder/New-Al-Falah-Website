@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth" data-lang="en">
+<head>
+  <script>
+    (function () {
+      try {
+        var lang = localStorage.getItem("alfalah-lang") || "en";
+        if (lang !== "fr" && lang !== "en") lang = "en";
+        document.documentElement.setAttribute("lang", lang);
+        document.documentElement.setAttribute("data-lang", lang);
+      } catch (e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Institutions &amp; Government | Al-Falah Marketing</title>
+  <meta name="description" content="Confidential digital for government and institutions — official portals, public image, AI dashboards, and protocol-aware delivery." />
+  <link rel="icon" href="assets/images/logo.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mint: { 400: "#55D799", 500: "#0D9373", 600: "#0b7a5f" },
+            dark: { 950: "#090A0F", 900: "#0D0F11", 800: "#13171F", 700: "#181C25", 600: "#1F242D" }
+          },
+          fontFamily: { sans: ["Inter", "system-ui", "sans-serif"] }
+        }
+      }
+    };
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: #0D0F11;
+      color: #fafafa;
+      margin: 0;
+      padding-top: 64px; /* space for fixed header */
+    }
+    /* Language: always show one locale */
+    .lang-fr { display: none !important; }
+    html[data-lang="fr"] .lang-en { display: none !important; }
+    html[data-lang="fr"] .lang-fr { display: inline !important; }
+    html[data-lang="en"] .lang-en { display: inline !important; }
+    html[data-lang="en"] .lang-fr { display: none !important; }
+    p .lang-en, p .lang-fr, h1 .lang-en, h1 .lang-fr, h2 .lang-en, h2 .lang-fr,
+    h3 .lang-en, h3 .lang-fr, li .lang-en, li .lang-fr, a .lang-en, a .lang-fr,
+    span .lang-en, span .lang-fr, div .lang-en, div .lang-fr {
+      /* allow block contexts */
+    }
+    html[data-lang="fr"] p > .lang-fr,
+    html[data-lang="fr"] h1 > .lang-fr,
+    html[data-lang="fr"] h2 > .lang-fr,
+    html[data-lang="fr"] h3 > .lang-fr,
+    html[data-lang="fr"] li > .lang-fr { display: inline !important; }
+
+    /* FIXED header — always visible */
+    .site-header {
+      position: fixed !important;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      height: 64px;
+      background: rgba(13, 15, 17, 0.95) !important;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .site-header .inner {
+      max-width: 80rem;
+      margin: 0 auto;
+      padding: 0 1rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .glass {
+      background: rgba(19, 23, 31, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #0d9373, #55d799);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .card-hover { transition: transform 0.2s ease, border-color 0.2s ease; }
+    .card-hover:hover {
+      transform: translateY(-3px);
+      border-color: rgba(13, 147, 115, 0.5);
+    }
+
+    /* Image cards */
+    .inst-img-card {
+      position: relative;
+      display: block;
+      overflow: hidden;
+      border-radius: 1rem;
+      border: 1px solid rgba(85, 215, 153, 0.3);
+      aspect-ratio: 4/3;
+      background: #13171F;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 40px rgba(13,147,115,0.12);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+    .inst-img-card img {
+      width: 100%;
+      height: 100%;
+      min-height: 180px;
+      display: block;
+      object-fit: cover;
+      filter: brightness(1.2) contrast(1.1) saturate(1.1);
+      transition: transform 0.5s ease, filter 0.35s ease;
+    }
+    .inst-img-card .cap {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 0.9rem 1rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+      color: #f1f5f9;
+      font-size: 0.8rem;
+      font-weight: 600;
+      z-index: 2;
+    }
+    .inst-img-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 50px rgba(13,147,115,0.25);
+    }
+    .inst-img-card:hover img {
+      transform: scale(1.06);
+      filter: brightness(1.3) contrast(1.12);
+    }
+    .inst-img-card:hover .cap { color: #55D799; }
+
+    .pillar-card {
+      background: rgba(19, 23, 31, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      color: #fafafa;
+      text-decoration: none;
+      display: block;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .pillar-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(13, 147, 115, 0.45);
+    }
+    .pillar-card h3 {
+      color: #ffffff !important;
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem;
+    }
+    .pillar-card p {
+      color: #94a3b8 !important;
+      font-size: 0.875rem;
+      margin: 0 0 0.75rem;
+      line-height: 1.5;
+    }
+    .pillar-card .more {
+      color: #55D799 !important;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .detail {
+      background: rgba(19, 23, 31, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1.75rem;
+      margin-bottom: 1.25rem;
+      scroll-margin-top: 80px;
+    }
+    .detail h2 {
+      color: #ffffff !important;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0 0 0.75rem;
+    }
+    .detail p, .detail li {
+      color: #94a3b8 !important;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .detail a { color: #55D799 !important; font-weight: 500; }
+    .badge {
+      display: inline-flex;
+      width: 2.5rem; height: 2.5rem;
+      align-items: center; justify-content: center;
+      border-radius: 0.75rem;
+      background: rgba(13, 147, 115, 0.15);
+      color: #55D799;
+      font-weight: 700;
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.5rem;
+      background: #0D9373;
+      color: #fff !important;
+      font-weight: 600;
+      border-radius: 0.75rem;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: #0b7a5f; }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.5rem;
+      background: rgba(19, 23, 31, 0.9);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff !important;
+      font-weight: 500;
+      border-radius: 0.75rem;
+      text-decoration: none;
+    }
+    .lang-btn {
+      padding: 0.4rem 0.65rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+      color: #94a3b8;
+    }
+    .lang-btn.active {
+      background: #0D9373;
+      color: #fff;
+    }
+    .wrap { max-width: 80rem; margin: 0 auto; padding: 0 1rem; }
+    .wrap-narrow { max-width: 48rem; margin: 0 auto; padding: 0 1rem; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <a href="index.html" style="display:flex;align-items:center;gap:0.6rem;text-decoration:none;color:#fff;font-weight:600;font-size:0.95rem;">
+      <img src="/assets/images/logo.jpg" alt="Al-Falah" width="32" height="32" style="border-radius:8px;object-fit:cover;" onerror="this.style.display='none'" />
+      Al-Falah Marketing
+    </a>
+    <nav style="display:flex;align-items:center;gap:0.25rem;font-size:0.875rem;" class="hidden-mobile">
+      <a href="index.html" style="color:#cbd5e1;padding:0.5rem 0.75rem;text-decoration:none;border-radius:0.5rem;"><span class="lang-en">Home</span><span class="lang-fr">Accueil</span></a>
+      <a href="services.html" style="color:#cbd5e1;padding:0.5rem 0.75rem;text-decoration:none;border-radius:0.5rem;">Services</a>
+      <a href="contact.html" style="color:#cbd5e1;padding:0.5rem 0.75rem;text-decoration:none;border-radius:0.5rem;">Contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div style="display:flex;border:1px solid rgba(255,255,255,0.1);border-radius:0.5rem;overflow:hidden;">
+        <button type="button" class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+        <button type="button" class="lang-btn" id="btn-fr" onclick="setLang('fr')">FR</button>
+      </div>
+      <a href="contact.html" class="btn-primary" style="padding:0.5rem 0.9rem;font-size:0.8rem;">
+        <span class="lang-en">Book a call</span><span class="lang-fr">Réserver</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Hero -->
+  <section style="padding:3.5rem 0 2rem;background:radial-gradient(ellipse at 50% 0%,rgba(13,147,115,0.12),transparent 55%);">
+    <div class="wrap-narrow">
+      <div style="display:inline-flex;padding:0.25rem 0.75rem;border-radius:999px;background:rgba(13,147,115,0.12);border:1px solid rgba(13,147,115,0.25);color:#55D799;font-size:0.75rem;font-weight:500;margin-bottom:1.25rem;">
+        <span class="lang-en">Institutions · NGOs · Public figures</span>
+        <span class="lang-fr">Institutions · ONG · Personnalités</span>
+      </div>
+      <h1 style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;line-height:1.15;margin:0 0 1rem;color:#fff;">
+        <span class="lang-en">Confidential digital for <span class="gradient-text">government &amp; institutions</span></span>
+        <span class="lang-fr">Digital confidentiel pour <span class="gradient-text">institutions &amp; gouvernement</span></span>
+      </h1>
+      <p style="color:#94a3b8;font-size:1.05rem;line-height:1.6;margin:0 0 1.75rem;">
+        <span class="lang-en">Official portals, public image, AI dashboards and protocol-aware delivery — from Conakry to secure remote collaboration.</span>
+        <span class="lang-fr">Portails officiels, image publique, tableaux de bord IA et livraison respectueuse du protocole — de Conakry à la collaboration à distance sécurisée.</span>
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.75rem;">
+        <a href="#contact-cta" class="btn-primary">
+          <span class="lang-en">Explore institutional services</span>
+          <span class="lang-fr">Découvrir l'offre institutionnelle</span>
+        </a>
+        <a href="https://wa.me/224611351302?text=Hello%20Al-Falah%2C%20institutional%20services" target="_blank" rel="noopener" class="btn-ghost">WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 images -->
+  <section style="padding:0 0 1.5rem;" aria-label="Institutional visuals">
+    <div class="wrap">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;">
+        <a href="#inst-platforms" class="inst-img-card">
+          <img src="/assets/images/inst-hero-foyer.jpg" alt="Secure public-sector operations" loading="lazy" />
+          <div class="cap">
+            <span class="lang-en">Secure public-sector operations</span>
+            <span class="lang-fr">Opérations secteur public sécurisées</span>
+          </div>
+        </a>
+        <a href="#inst-ai" class="inst-img-card">
+          <img src="/assets/images/inst-hero-governance.jpg" alt="Digital governance architecture" loading="lazy" />
+          <div class="cap">
+            <span class="lang-en">Digital governance architecture</span>
+            <span class="lang-fr">Architecture de gouvernance digitale</span>
+          </div>
+        </a>
+        <a href="#inst-protocol" class="inst-img-card">
+          <img src="/assets/images/inst-hero-diplomatic.jpg" alt="Inter-ministerial collaboration" loading="lazy" />
+          <div class="cap">
+            <span class="lang-en">Inter-ministerial collaboration</span>
+            <span class="lang-fr">Collaboration inter-ministérielle</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 pillars -->
+  <section style="padding:2rem 0 3rem;">
+    <div class="wrap">
+      <h2 style="text-align:center;font-size:1.75rem;font-weight:700;color:#fff;margin:0 0 0.5rem;">
+        <span class="lang-en">What we deliver for institutions</span>
+        <span class="lang-fr">Ce que nous livrons aux institutions</span>
+      </h2>
+      <p style="text-align:center;color:#94a3b8;font-size:0.9rem;margin:0 0 2rem;">
+        <span class="lang-en">Four pillars designed for public trust — not vanity metrics.</span>
+        <span class="lang-fr">Quatre piliers conçus pour la confiance publique — pas des métriques de vanité.</span>
+      </p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;">
+        <a href="#inst-platforms" class="pillar-card">
+          <div class="badge">01</div>
+          <h3><span class="lang-en">Institutional platforms</span><span class="lang-fr">Plateformes institutionnelles</span></h3>
+          <p><span class="lang-en">Secure official websites &amp; portals</span><span class="lang-fr">Sites &amp; portails officiels sécurisés</span></p>
+          <span class="more"><span class="lang-en">Learn more →</span><span class="lang-fr">En savoir plus →</span></span>
+        </a>
+        <a href="#inst-branding" class="pillar-card">
+          <div class="badge">02</div>
+          <h3><span class="lang-en">Public image &amp; branding</span><span class="lang-fr">Image publique &amp; branding</span></h3>
+          <p><span class="lang-en">Identity aligned with protocol</span><span class="lang-fr">Identité alignée sur le protocole</span></p>
+          <span class="more"><span class="lang-en">Learn more →</span><span class="lang-fr">En savoir plus →</span></span>
+        </a>
+        <a href="#inst-ai" class="pillar-card">
+          <div class="badge">03</div>
+          <h3><span class="lang-en">AI &amp; data for governance</span><span class="lang-fr">IA &amp; data pour la gouvernance</span></h3>
+          <p><span class="lang-en">Dashboards &amp; practical automation</span><span class="lang-fr">Tableaux de bord &amp; automatisation</span></p>
+          <span class="more"><span class="lang-en">Learn more →</span><span class="lang-fr">En savoir plus →</span></span>
+        </a>
+        <a href="#inst-protocol" class="pillar-card">
+          <div class="badge">04</div>
+          <h3><span class="lang-en">Discretion &amp; protocol</span><span class="lang-fr">Discrétion &amp; protocole</span></h3>
+          <p><span class="lang-en">Confidential delivery &amp; support</span><span class="lang-fr">Livraison confidentielle &amp; support</span></p>
+          <span class="more"><span class="lang-en">Learn more →</span><span class="lang-fr">En savoir plus →</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Details -->
+  <section style="padding:2rem 0 3rem;border-top:1px solid rgba(255,255,255,0.08);">
+    <div class="wrap-narrow">
+      <article id="inst-platforms" class="detail">
+        <div class="badge">01</div>
+        <h2><span class="lang-en">Institutional platforms</span><span class="lang-fr">Plateformes institutionnelles</span></h2>
+        <p>
+          <span class="lang-en">Modern, secure, accessible official websites and portals — clear architecture, news publishing, mobile-first, multilingual when required.</span>
+          <span class="lang-fr">Sites et portails officiels modernes, sécurisés et accessibles — architecture claire, actualités, mobile-first, multilingue si besoin.</span>
+        </p>
+        <ul>
+          <li><span class="lang-en">Hardened hosting &amp; HTTPS</span><span class="lang-fr">Hébergement renforcé &amp; HTTPS</span></li>
+          <li><span class="lang-en">Editorial workflows for official publications</span><span class="lang-fr">Workflows éditoriaux pour publications officielles</span></li>
+          <li><span class="lang-en">Citizen- and partner-friendly navigation</span><span class="lang-fr">Navigation claire pour citoyens et partenaires</span></li>
+        </ul>
+        <a href="contact.html"><span class="lang-en">Request a confidential briefing →</span><span class="lang-fr">Demander un briefing confidentiel →</span></a>
+      </article>
+
+      <article id="inst-branding" class="detail">
+        <div class="badge">02</div>
+        <h2><span class="lang-en">Public image &amp; branding</span><span class="lang-fr">Image publique &amp; branding</span></h2>
+        <p>
+          <span class="lang-en">Visual identity and digital presence aligned with institutional dignity and protocol.</span>
+          <span class="lang-fr">Identité visuelle et présence digitale alignées sur la dignité institutionnelle et le protocole.</span>
+        </p>
+        <ul>
+          <li><span class="lang-en">Logo systems, colors, formal templates</span><span class="lang-fr">Systèmes de logo, couleurs, modèles formels</span></li>
+          <li><span class="lang-en">Protocol-aware social and web presence</span><span class="lang-fr">Présence web et sociale protocolaire</span></li>
+          <li><span class="lang-en">Collateral ready for official use</span><span class="lang-fr">Supports prêts à l'usage officiel</span></li>
+        </ul>
+        <a href="contact.html"><span class="lang-en">Request a confidential briefing →</span><span class="lang-fr">Demander un briefing confidentiel →</span></a>
+      </article>
+
+      <article id="inst-ai" class="detail">
+        <div class="badge">03</div>
+        <h2><span class="lang-en">AI &amp; data for governance</span><span class="lang-fr">IA &amp; data pour la gouvernance</span></h2>
+        <p>
+          <span class="lang-en">Practical dashboards and automation that reduce administrative load — confidentiality first.</span>
+          <span class="lang-fr">Tableaux de bord et automatisations concrètes qui allègent la charge — confidentialité d'abord.</span>
+        </p>
+        <ul>
+          <li><span class="lang-en">Project-tracking and milestone views</span><span class="lang-fr">Suivi de projets et jalons</span></li>
+          <li><span class="lang-en">Internal reporting for leadership</span><span class="lang-fr">Reporting interne pour la direction</span></li>
+          <li><span class="lang-en">Workflow automation without risky black boxes</span><span class="lang-fr">Automatisation sans boîtes noires risquées</span></li>
+        </ul>
+        <a href="contact.html"><span class="lang-en">Request a confidential briefing →</span><span class="lang-fr">Demander un briefing confidentiel →</span></a>
+      </article>
+
+      <article id="inst-protocol" class="detail">
+        <div class="badge">04</div>
+        <h2><span class="lang-en">Discretion &amp; protocol</span><span class="lang-fr">Discrétion &amp; protocole</span></h2>
+        <p>
+          <span class="lang-en">Dedicated contacts, formal sign-off at milestones, confidential handling of drafts and credentials.</span>
+          <span class="lang-fr">Contacts dédiés, validations formelles aux jalons, traitement confidentiel des brouillons et accès.</span>
+        </p>
+        <ul>
+          <li><span class="lang-en">One accountable relationship manager</span><span class="lang-fr">Un interlocuteur responsable</span></li>
+          <li><span class="lang-en">No public launch without agreed validation</span><span class="lang-fr">Pas de lancement sans validation convenue</span></li>
+          <li><span class="lang-en">Priority support (WhatsApp &amp; phone)</span><span class="lang-fr">Support prioritaire (WhatsApp &amp; téléphone)</span></li>
+        </ul>
+        <a href="contact.html"><span class="lang-en">Request a confidential briefing →</span><span class="lang-fr">Demander un briefing confidentiel →</span></a>
+      </article>
+    </div>
+  </section>
+
+  <section id="contact-cta" style="padding:3rem 0;border-top:1px solid rgba(255,255,255,0.08);text-align:center;scroll-margin-top:80px;">
+    <div class="wrap-narrow">
+      <h2 style="color:#fff;font-size:1.5rem;font-weight:700;margin:0 0 0.75rem;">
+        <span class="lang-en">Ready for a confidential conversation?</span>
+        <span class="lang-fr">Prêt pour un échange confidentiel ?</span>
+      </h2>
+      <p style="color:#94a3b8;font-size:0.9rem;margin:0 0 1.5rem;">
+        <span class="lang-en">Book a free strategy call or message us on WhatsApp.</span>
+        <span class="lang-fr">Réservez un appel stratégie gratuit ou écrivez-nous sur WhatsApp.</span>
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:0.75rem;justify-content:center;">
+        <a href="contact.html" class="btn-primary"><span class="lang-en">Contact form</span><span class="lang-fr">Formulaire de contact</span></a>
+        <a href="https://wa.me/224611351302?text=Hello%20Al-Falah%2C%20institutional%20consultation" target="_blank" rel="noopener" class="btn-ghost">WhatsApp · +224 611 351 302</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer style="border-top:1px solid rgba(255,255,255,0.08);padding:2rem 0;color:#64748b;font-size:0.875rem;">
+  <div class="wrap" style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;align-items:center;">
+    <p style="margin:0;">© <span id="y"></span> Al-Falah Marketing</p>
+    <div style="display:flex;gap:1rem;">
+      <a href="index.html" style="color:#64748b;">Home</a>
+      <a href="privacy.html" style="color:#64748b;">Privacy</a>
+      <a href="terms.html" style="color:#64748b;">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("y").textContent = new Date().getFullYear();
+  function setLang(lang) {
+    if (lang !== "fr" && lang !== "en") lang = "en";
+    document.documentElement.setAttribute("data-lang", lang);
+    document.documentElement.setAttribute("lang", lang);
+    document.body.setAttribute("data-lang", lang);
+    try { localStorage.setItem("alfalah-lang", lang); } catch (e) {}
+    var en = document.getElementById("btn-en");
+    var fr = document.getElementById("btn-fr");
+    if (en) en.className = "lang-btn" + (lang === "en" ? " active" : "");
+    if (fr) fr.className = "lang-btn" + (lang === "fr" ? " active" : "");
+  }
+  try { setLang(localStorage.getItem("alfalah-lang") || "en"); } catch (e) { setLang("en"); }
+</script>
+</body>
+</html>

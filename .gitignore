@@ -20,3 +20,14 @@ cgi-bin/
 *.bak
 *-old.html
 index-old.html
+
+# Server-only secrets and runtime data (never commit)
+/data/
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+*.zip
+*.tar
+*.tar.gz
+

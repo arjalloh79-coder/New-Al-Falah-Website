@@ -27,6 +27,7 @@ if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 try {
     $pdo = db();
+    // Upsert-like for SQLite
     $exists = $pdo->prepare('SELECT id FROM subscribers WHERE email = ?');
     $exists->execute([$email]);
     if ($exists->fetch()) {
