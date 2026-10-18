@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <script>
+    /* Theme before paint — prevent flash */
+    (function () {
+      try {
+        var t = localStorage.getItem("alfalah-theme");
+        if (t !== "light" && t !== "dark") t = "dark";
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+
+  <script>
+    /* Persist EN/FR before paint to avoid flash of wrong language */
+    (function () {
+      try {
+        var lang = localStorage.getItem("alfalah-lang") || "en";
+        if (lang !== "fr" && lang !== "en") lang = "en";
+        document.documentElement.setAttribute("lang", lang);
+        document.documentElement.setAttribute("data-lang-pending", lang);
+        document.addEventListener("DOMContentLoaded", function () {
+          if (document.body) document.body.setAttribute("data-lang", lang);
+        });
+      } catch (e) {}
+    })();
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Development | Al-Falah Marketing</title>
+  <meta name="description" content="Custom-coded, high-performance websites & web apps built to convert visitors into customers 24/7." />
+  <link rel="icon" href="../assets/images/logo.jpg" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mint: { 400: '#55D799', 500: '#0D9373', 600: '#0b7a5f' },
+            dark: { 950: '#090A0F', 900: '#0D0F11', 800: '#13171F', 700: '#181C25', 600: '#1F242D' }
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { background: #090A0F; }
+    .glass { background: rgba(19,23,31,0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.06); }
+    .glass-strong {
+      /* sticky-safe opaque glass */
+      background: rgba(13, 15, 17, 0.92) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px); background: rgba(19,23,31,0.88); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.08); }
+    .gradient-text { background: linear-gradient(135deg, #55D799, #0D9373); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    [data-lang="fr"] .lang-en { display: none !important; }
+    [data-lang="en"] .lang-fr { display: none !important; }
+    .cookie-banner { transition: transform 0.35s ease, opacity 0.35s ease; }
+    .cookie-banner.hidden-banner { transform: translateY(110%); opacity: 0; pointer-events: none; }
+    .card-hover { transition: all 0.3s ease; }
+    .card-hover:hover { border-color: rgba(13,147,115,0.4); transform: translateY(-4px); }
+  
+    /* Language toggle always visible */
+    .lang-switch { flex-shrink: 0; }
+    .lang-switch button { touch-action: manipulation; }
+    @media (max-width: 640px) {
+      .lang-switch { order: 0; }
+    }
+  
+    /* Social links must stay clickable above overlays */
+    .social-link { pointer-events: auto !important; position: relative; z-index: 20; }
+    .social-link i, .social-link svg { pointer-events: none !important; }
+    [aria-label="Social media"] { position: relative; z-index: 20; }
+
+  
+    /* Footer social — brand colors on hover */
+    .footer-social {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      min-height: 40px;
+      border-radius: 10px;
+      background: rgba(19, 23, 31, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+    .footer-social:hover {
+      transform: translateY(-2px);
+      color: #fff;
+    }
+    .footer-social--fb:hover { background: #1877F2; border-color: #1877F2; }
+    .footer-social--ig:hover {
+      background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af);
+      border-color: transparent;
+    }
+    .footer-social--li:hover { background: #0A66C2; border-color: #0A66C2; }
+    .footer-social--yt:hover { background: #FF0000; border-color: #FF0000; }
+    .footer-social--wa:hover { background: #25D366; border-color: #25D366; }
+
+  
+    /* ===== Fixed site header (reliable on all browsers) ===== */
+    header.site-header,
+    header.sticky,
+    body > header:first-of-type {
+      position: fixed !important;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      width: 100%;
+      background: rgba(13, 15, 17, 0.95) !important;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    /* Offset content so it is not under fixed header */
+    body {
+      padding-top: 4.5rem !important;
+    }
+
+  </style>
+  <link rel="stylesheet" href="../theme-light.css" />
+</head>
+<body class="font-sans text-white antialiased bg-dark-950 pb-20 lg:pb-0" data-lang="en">
+
+  <div id="cookie-banner" class="cookie-banner fixed bottom-0 inset-x-0 z-[90] bg-dark-800 border-t border-dark-600 px-4 py-4">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-slate-300 text-center sm:text-left">
+        <span class="lang-en">We use cookies to improve your experience. </span>
+        <span class="lang-fr">Nous utilisons des cookies pour améliorer votre expérience. </span>
+        <a href="../privacy.html" class="underline text-mint-400"><span class="lang-en">Privacy Policy</span><span class="lang-fr">Politique de confidentialité</span></a>
+      </p>
+      <div class="flex gap-3">
+        <button onclick="rejectCookies()" class="px-4 py-2 text-sm border border-dark-500 rounded-lg text-slate-300 hover:bg-dark-700"><span class="lang-en">Reject</span><span class="lang-fr">Refuser</span></button>
+        <button onclick="acceptCookies()" class="px-5 py-2 text-sm bg-mint-500 text-white rounded-lg font-medium"><span class="lang-en">Accept</span><span class="lang-fr">Accepter</span></button>
+      </div>
+    </div>
+  </div>
+
+  <header class="site-header sticky top-0 z-50 glass-strong">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="../index.html" class="flex items-center gap-2.5">
+          <img src="../assets/images/logo.jpg" alt="Al-Falah Marketing" class="h-9 w-9 rounded-lg object-cover shadow-lg shadow-mint-500/20" />
+          <div class="leading-tight">
+            <span class="block text-white font-semibold text-[15px]">Al-Falah</span>
+            <span class="block text-mint-400 text-xs font-medium -mt-0.5">Marketing</span>
+          </div>
+        </a>
+        <nav class="hidden lg:flex items-center gap-0.5">
+          <a href="../index.html" class="px-3.5 py-2 text-sm text-slate-300 hover:text-white rounded-lg hover:bg-white/5"><span class="lang-en">Home</span><span class="lang-fr">Accueil</span></a>
+          <a href="../about.html" class="px-3.5 py-2 text-sm text-slate-300 hover:text-white rounded-lg hover:bg-white/5"><span class="lang-en">About</span><span class="lang-fr">À propos</span></a>
+          <div class="relative group">
+            <a href="../institutions.html" class="px-3.5 py-2 text-sm text-slate-300 hover:text-white rounded-lg hover:bg-white/5 transition inline-flex items-center gap-1">
+              <span class="lang-en">Institutions</span><span class="lang-fr">Institutions</span>
+              <svg class="w-3.5 h-3.5 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </a>
+            <div class="invisible opacity-0 group-hover:visible group-hover:opacity-100 transition absolute left-0 top-full pt-2 z-50 min-w-[260px]">
+              <div class="glass rounded-xl border border-dark-600 shadow-xl py-2">
+                <a href="../institutions.html" class="block px-4 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-white/5"><span class="lang-en">Overview</span><span class="lang-fr">Vue d'ensemble</span></a>
+                <a href="../institutions-platforms.html" class="block px-4 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-white/5"><span class="lang-en">Institutional platforms</span><span class="lang-fr">Plateformes institutionnelles</span></a>
+                <a href="../institutions-branding.html" class="block px-4 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-white/5"><span class="lang-en">Public image &amp; branding</span><span class="lang-fr">Image publique &amp; branding</span></a>
+                <a href="../institutions-ai.html" class="block px-4 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-white/5"><span class="lang-en">AI &amp; data for governance</span><span class="lang-fr">IA &amp; data gouvernance</span></a>
+                <a href="../institutions-protocol.html" class="block px-4 py-2.5 text-sm text-slate-300 hover:text-white hover:bg-white/5"><span class="lang-en">Discretion &amp; protocol</span><span class="lang-fr">Discrétion &amp; protocole</span></a>
+              </div>
+            </div>
+          </div>
+          <a href="../services.html" class="px-3.5 py-2 text-sm text-slate-300 hover:text-white rounded-lg hover:bg-white/5"><span class="lang-en">Services</span><span class="lang-fr">Services</span></a>
+          <a href="../portfolio.html" class="px-3.5 py-2 text-sm text-slate-300 hover:text-white rounded-lg hover:bg-white/5"><span class="lang-en">Portfolio</span><span class="lang-fr">Réalisations</span></a>
+          <a href="../results.html" class="px-3.5 py-2 text-sm text-slate-300 hover:text-white rounded-lg hover:bg-white/5"><span class="lang-en">Results</span><span class="lang-fr">Résultats</span></a>
+          <a href="../blog.html" class="px-3.5 py-2 text-sm text-slate-300 hover:text-white rounded-lg hover:bg-white/5"><span class="lang-en">Blog</span><span class="lang-fr">Blog</span></a>
+          <a href="../gallery.html" class="px-3.5 py-2 text-sm text-slate-300 hover:text-white rounded-lg hover:bg-white/5"><span class="lang-en">Gallery</span><span class="lang-fr">Galerie</span></a>
+          <a href="../contact.html" class="px-3.5 py-2 text-sm text-slate-300 hover:text-white rounded-lg hover:bg-white/5"><span class="lang-en">Contact</span><span class="lang-fr">Contact</span></a>
+        </nav>
+        <div class="flex items-center gap-2.5">
+          <div class="lang-switch flex items-center rounded-lg overflow-hidden border border-dark-600 bg-dark-800/80 shrink-0" role="group" aria-label="Language">
+            <button type="button" onclick="setLang('en')" id="btn-en" data-lang-btn="en" class="px-2.5 py-1.5 bg-mint-500 text-white transition min-h-[48px] min-w-[48px] inline-flex items-center justify-center px-3" aria-pressed="true">EN</button>
+            <button type="button" onclick="setLang('fr')" id="btn-fr" data-lang-btn="fr" class="px-2.5 py-1.5 text-slate-400 hover:text-white transition min-h-[48px] min-w-[48px] inline-flex items-center justify-center px-3" aria-pressed="false">FR</button>
+          </div>
+          <a href="../contact.html" class="hidden sm:inline-flex px-4 py-2 bg-mint-500 hover:bg-mint-400 text-white text-sm font-semibold rounded-lg">
+            <span class="lang-en">Book Strategy Session</span><span class="lang-fr">Réserver une session</span>
+          </a>
+          <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-slate-400"><i data-lucide="menu" class="w-5 h-5"></i></button>
+        </div>
+      </div>
+    </div>
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-dark-600 bg-dark-900">
+      <div class="px-4 py-4 space-y-1">
+        <a href="../index.html" class="block px-3 py-2.5 text-sm text-slate-300"><span class="lang-en">Home</span><span class="lang-fr">Accueil</span></a>
+        <a href="../about.html" class="block px-3 py-2.5 text-sm text-slate-300"><span class="lang-en">About</span><span class="lang-fr">À propos</span></a>
+        <a href="../institutions.html" class="block px-3 py-3 text-base text-slate-300 hover:text-white rounded-lg hover:bg-white/5"><span class="lang-en">Institutions</span><span class="lang-fr">Institutions</span></a>
+        <div class="pl-4 border-l border-dark-600 ml-3 space-y-1 mb-1">
+          <a href="../institutions-platforms.html" class="block px-3 py-2.5 text-sm text-slate-400 hover:text-mint-400 rounded-lg"><span class="lang-en">Platforms</span><span class="lang-fr">Plateformes</span></a>
+          <a href="../institutions-branding.html" class="block px-3 py-2.5 text-sm text-slate-400 hover:text-mint-400 rounded-lg"><span class="lang-en">Public image</span><span class="lang-fr">Image publique</span></a>
+          <a href="../institutions-ai.html" class="block px-3 py-2.5 text-sm text-slate-400 hover:text-mint-400 rounded-lg"><span class="lang-en">AI &amp; data</span><span class="lang-fr">IA &amp; data</span></a>
+          <a href="../institutions-protocol.html" class="block px-3 py-2.5 text-sm text-slate-400 hover:text-mint-400 rounded-lg"><span class="lang-en">Protocol</span><span class="lang-fr">Protocole</span></a>
+        </div>
+        <a href="../services.html" class="block px-3 py-2.5 text-sm text-slate-300"><span class="lang-en">Services</span><span class="lang-fr">Services</span></a>
+        <a href="../portfolio.html" class="block px-3 py-2.5 text-sm text-slate-300"><span class="lang-en">Portfolio</span><span class="lang-fr">Réalisations</span></a>
+        <a href="../blog.html" class="block px-3 py-2.5 text-sm text-slate-300"><span class="lang-en">Blog</span><span class="lang-fr">Blog</span></a>
+        <a href="../gallery.html" class="block px-3 py-2.5 text-sm text-slate-300"><span class="lang-en">Gallery</span><span class="lang-fr">Galerie</span></a>
+        <a href="../contact.html" class="block px-3 py-2.5 text-sm text-slate-300"><span class="lang-en">Contact</span><span class="lang-fr">Contact</span></a>
+      </div>
+    </div>
+  </header>
+
+
+<main>
+  <section class="py-16 lg:py-24">
+    <div class="max-w-4xl mx-auto px-4">
+      <a href="../services.html" class="inline-flex items-center gap-2 text-sm text-mint-400 mb-8 hover:text-mint-300">
+        <span class="lang-en">← Back to Services</span><span class="lang-fr">← Retour aux services</span>
+      </a>
+      <div class="w-14 h-14 rounded-xl bg-mint-500/15 flex items-center justify-center mb-6">
+        <i data-lucide="code-2" class="w-7 h-7 text-mint-400"></i>
+      </div>
+      <img src="../assets/images/service-image.jpg" alt="Web Development" class="w-full rounded-2xl mb-8 object-cover max-h-56 border border-dark-600" loading="lazy" />
+      <h1 class="text-4xl font-bold mb-4">
+        <span class="lang-en">Web Development</span><span class="lang-fr">Développement Web</span>
+      </h1>
+      <p class="text-xl text-slate-400 mb-8">
+        <span class="lang-en">Custom-coded, high-performance websites & web apps built to convert visitors into customers 24/7.</span><span class="lang-fr">Sites web et applications sur mesure, performants, conçus pour convertir les visiteurs en clients 24h/24.</span>
+      </p>
+      <p class="text-slate-300 leading-relaxed mb-10">
+        <span class="lang-en">We build lightning-fast, mobile-friendly websites designed to convert. From simple brochure sites to complex e-commerce platforms and custom web applications, every project is coded with performance, SEO and conversion in mind.</span><span class="lang-fr">Nous construisons des sites rapides et adaptés au mobile, conçus pour convertir. Des sites vitrine aux plateformes e-commerce et applications web sur mesure, chaque projet est codé pour la performance, le SEO et la conversion.</span>
+      </p>
+      <h2 class="text-xl font-semibold mb-4">
+        <span class="lang-en">What We Deliver</span><span class="lang-fr">Ce que nous livrons</span>
+      </h2>
+      <ul class="space-y-2 text-sm text-slate-400 mb-6">
+          <li class="flex gap-2"><span class="text-mint-400">✓</span><span class="lang-en">Custom web apps &amp; business sites</span><span class="lang-fr">Applications web &amp; sites business</span></li>
+          <li class="flex gap-2"><span class="text-mint-400">✓</span><span class="lang-en">E-commerce &amp; online stores</span><span class="lang-fr">E-commerce &amp; boutiques en ligne</span></li>
+          <li class="flex gap-2"><span class="text-mint-400">✓</span><span class="lang-en">CMS integration (easy to manage)</span><span class="lang-fr">Intégration CMS (gestion simple)</span></li>
+          <li class="flex gap-2"><span class="text-mint-400">✓</span><span class="lang-en">Lightning-fast, mobile-first performance</span><span class="lang-fr">Performance mobile-first ultra-rapide</span></li>
+        </ul>
+      <a href="../contact.html" class="inline-flex items-center gap-2 px-6 py-3.5 bg-mint-500 hover:bg-mint-400 text-white font-semibold rounded-xl transition">
+        <span class="lang-en">Book Free Strategy Call →</span><span class="lang-fr">Réserver un appel stratégie gratuit →</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+
+  <footer class="border-t border-dark-600 bg-dark-950">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-16">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
+
+        <!-- Brand + social + newsletter -->
+        <div class="sm:col-span-2 lg:col-span-4">
+          <div class="flex items-center gap-3 mb-4">
+            <img src="../assets/images/logo.jpg" alt="Al-Falah Marketing" class="w-9 h-9 rounded-lg object-cover ring-1 ring-white/10" />
+            <span class="font-semibold text-white tracking-tight">Al-Falah Marketing</span>
+          </div>
+          <p class="text-sm text-slate-400 leading-relaxed max-w-sm mb-5">
+            <span class="lang-en">Digital marketing agency helping SMBs grow across Guinea, Sierra Leone, and the USA — web, SEO, ads, AI &amp; IT.</span>
+            <span class="lang-fr">Agence de marketing digital aidant les PME à croître en Guinée, Sierra Leone et aux USA — web, SEO, pubs, IA &amp; IT.</span>
+          </p>
+
+          <!-- Social icons under brand -->
+          <div class="flex flex-wrap items-center gap-2.5 mb-6" aria-label="Social media">
+            <a href="https://www.facebook.com/profile.php?id=61573274222922" target="_blank" rel="noopener noreferrer"
+              class="footer-social footer-social--fb" title="Facebook" aria-label="Facebook">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="pointer-events-none" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/alfalahmarketinginc/" target="_blank" rel="noopener noreferrer"
+              class="footer-social footer-social--ig" title="Instagram" aria-label="Instagram">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="pointer-events-none" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/company/al-falah-marketing-inc/" target="_blank" rel="noopener noreferrer"
+              class="footer-social footer-social--li" title="LinkedIn" aria-label="LinkedIn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="pointer-events-none" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a href="https://www.youtube.com/@al-falahmarketing-official" target="_blank" rel="noopener noreferrer"
+              class="footer-social footer-social--yt" title="YouTube" aria-label="YouTube">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="pointer-events-none" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.8zM9.8 15.5v-7l6.2 3.5-6.2 3.5z"/></svg>
+            </a>
+            <a href="https://wa.me/224611351302" target="_blank" rel="noopener noreferrer"
+              class="footer-social footer-social--wa" title="WhatsApp" aria-label="WhatsApp">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="pointer-events-none" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 2.4 17.9L1 23l5.3-1.4A11 11 0 1 0 20.5 3.5zM12 20.2a9 9 0 0 1-4.6-1.3l-.3-.2-3.1.8.8-3-.2-.3A9 9 0 1 1 12 20.2zm5.2-6.7c-.3-.1-1.6-.8-1.9-.9s-.4-.1-.6.1-.7.9-.8 1-.3.2-.6.1a7.4 7.4 0 0 1-2.2-1.4 8.2 8.2 0 0 1-1.5-1.9c-.2-.3 0-.4.1-.6l.4-.5c.1-.1.2-.3.3-.4s0-.3 0-.4-.6-1.5-.8-2.1c-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.4.1-.7.4s-.9.9-.9 2.1.9 2.5 1 2.6 1.8 2.8 4.4 3.9c.6.3 1.1.4 1.5.5.6.2 1.2.2 1.7.1.5-.1 1.6-.7 1.8-1.3s.2-1.2.2-1.3-.2-.2-.4-.3z"/></svg>
+            </a>
+          </div>
+
+          <!-- Newsletter -->
+          <form onsubmit="return submitNewsletter(event)" class="max-w-sm">
+            <label class="block text-xs font-medium text-slate-400 mb-2">
+              <span class="lang-en">Newsletter</span>
+              <span class="lang-fr">Newsletter</span>
+            </label>
+            <div class="flex gap-2">
+              <input type="email" name="email" required
+                data-placeholder-en="Enter your email"
+                data-placeholder-fr="Entrez votre email"
+                placeholder="Enter your email"
+                class="flex-1 min-w-0 bg-dark-800 border border-dark-600 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-mint-500 focus:ring-1 focus:ring-mint-500/40 transition" />
+              <button type="submit" class="shrink-0 px-4 py-2.5 bg-mint-500 hover:bg-mint-400 text-white text-sm font-semibold rounded-lg transition">
+                <span class="lang-en">Subscribe</span>
+                <span class="lang-fr">S'abonner</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Services -->
+                <div class="lg:col-span-2">
+          <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">
+            <span class="lang-en">Services</span><span class="lang-fr">Services</span>
+          </h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="../index.html#web-development" class="text-slate-400 hover:text-mint-400 transition"><span class="lang-en">Web Development</span><span class="lang-fr">Développement web</span></a></li>
+            <li><a href="../index.html#digital-marketing" class="text-slate-400 hover:text-mint-400 transition"><span class="lang-en">Digital Marketing</span><span class="lang-fr">Marketing digital</span></a></li>
+            <li><a href="../index.html#ai-automation" class="text-slate-400 hover:text-mint-400 transition"><span class="lang-en">AI &amp; Automation</span><span class="lang-fr">IA &amp; Automatisation</span></a></li>
+            <li><a href="../index.html#branding-design" class="text-slate-400 hover:text-mint-400 transition"><span class="lang-en">Branding &amp; Content</span><span class="lang-fr">Branding &amp; Contenu</span></a></li>
+            <li><a href="../index.html#it-solutions" class="text-slate-400 hover:text-mint-400 transition"><span class="lang-en">IT Solutions</span><span class="lang-fr">Solutions IT</span></a></li>
+          </ul>
+        </div>
+
+        <!-- Company -->
+        <div class="lg:col-span-2">
+          <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">
+            <span class="lang-en">Company</span><span class="lang-fr">Entreprise</span>
+          </h4>
+          <ul class="space-y-2.5 text-sm">
+                        <li><a href="../institutions.html" class="text-slate-400 hover:text-mint-400 transition"><span class="lang-en">Institutions</span><span class="lang-fr">Institutions</span></a></li>
+            <li><a href="../about.html" class="text-slate-400 hover:text-mint-400 transition"><span class="lang-en">About</span><span class="lang-fr">À propos</span></a></li>
+            <li><a href="../portfolio.html" class="text-slate-400 hover:text-mint-400 transition"><span class="lang-en">Portfolio</span><span class="lang-fr">Portfolio</span></a></li>
+            <li><a href="../blog.html" class="text-slate-400 hover:text-mint-400 transition"><span class="lang-en">Blog</span><span class="lang-fr">Blog</span></a></li>
+            <li><a href="../gallery.html" class="text-slate-400 hover:text-mint-400 transition"><span class="lang-en">Gallery</span><span class="lang-fr">Galerie</span></a></li>
+            <li><a href="../contact.html" class="text-slate-400 hover:text-mint-400 transition"><span class="lang-en">Contact</span><span class="lang-fr">Contact</span></a></li>
+          </ul>
+        </div>
+
+        <!-- Legal -->
+        <div class="lg:col-span-2">
+          <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">
+            <span class="lang-en">Legal</span><span class="lang-fr">Mentions légales</span>
+          </h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="../privacy.html" class="text-slate-400 hover:text-mint-400 transition"><span class="lang-en">Privacy Policy</span><span class="lang-fr">Confidentialité</span></a></li>
+            <li><a href="../terms.html" class="text-slate-400 hover:text-mint-400 transition"><span class="lang-en">Terms of Service</span><span class="lang-fr">Conditions</span></a></li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+                <div class="lg:col-span-2">
+          <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">
+            <span class="lang-en">Contact</span><span class="lang-fr">Contact</span>
+          </h4>
+          <ul class="space-y-2.5 text-sm text-slate-400">
+            <li>
+              <a href="https://wa.me/224611351302" target="_blank" rel="noopener noreferrer" class="hover:text-mint-400 transition">+224 611 351 302 <span class="text-slate-600">(GN)</span></a>
+            </li>
+            <li>
+              <a href="https://wa.me/23274321916" target="_blank" rel="noopener noreferrer" class="hover:text-mint-400 transition">+232 74 321 916 <span class="text-slate-600">(SL)</span></a>
+            </li>
+            <li>
+              <a href="tel:+12402806137" class="hover:text-mint-400 transition">+1 240-280-6137 <span class="text-slate-600">(US)</span></a>
+            </li>
+            <li>
+              <a href="mailto:info@al-falahmarketing.com" class="hover:text-mint-400 transition break-all">info@al-falahmarketing.com</a>
+            </li>
+            <li class="text-xs text-slate-500 leading-relaxed pt-1">
+              <span class="lang-en">Coyah, Guinea · Freetown, Sierra Leone</span>
+              <span class="lang-fr">Coyah, Guinée · Freetown, Sierra Leone</span><br />
+              <span class="lang-en">8468 Winding Trail, Laurel, MD 20724, USA</span>
+              <span class="lang-fr">8468 Winding Trail, Laurel, MD 20724, USA</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="mt-12 pt-8 border-t border-dark-600 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-slate-500 text-center sm:text-left">
+          <span class="lang-en">© 2026 Al-Falah Marketing. All rights reserved.</span>
+          <span class="lang-fr">© 2026 Al-Falah Marketing. Tous droits réservés.</span>
+          <span class="text-slate-600 mx-1.5">·</span>
+          <span class="text-slate-600">By Al-Falah Marketing</span>
+        </p>
+        <div class="flex items-center gap-2 text-xs text-slate-500">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-mint-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-mint-500"></span>
+          </span>
+          <span class="lang-en">All systems operational</span>
+          <span class="lang-fr">Tous les systèmes opérationnels</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="fixed bottom-0 inset-x-0 z-40 lg:hidden glass-strong border-t border-dark-600 px-3 py-2.5">
+    <div class="flex gap-2 max-w-lg mx-auto">
+      <a href="https://wa.me/224611351302" target="_blank" class="flex-1 flex items-center justify-center gap-2 py-3 bg-[#25D366] text-white text-sm font-semibold rounded-xl"><span class="lang-en">WhatsApp</span><span class="lang-fr">WhatsApp</span></a>
+      <a href="../contact.html" class="flex-1 flex items-center justify-center gap-2 py-3 bg-mint-500 text-white text-sm font-semibold rounded-xl"><span class="lang-en">Book Call</span><span class="lang-fr">Réserver</span></a>
+    </div>
+  </div>
+
+  <a href="https://wa.me/224611351302" target="_blank" class="hidden lg:flex fixed bottom-6 left-6 z-50 w-14 h-14 bg-[#25D366] rounded-full items-center justify-center shadow-lg">
+    <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+  <script>if(typeof lucide!=='undefined')lucide.createIcons();</script>
+
+  <script src="../shared.js?v=20261011b"></script>
+  <script src="../lang-persist.js?v=20261011b"></script>
+<script src="../ai-assistant.js" defer></script>
+<script src="../theme-toggle.js" defer></script>
+</body>
+</html>

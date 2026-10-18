@@ -1,0 +1,5 @@
+# Files the site references but that are not in the repo yet.
+# Upload each one to the path shown, then delete its line here.
+# CI fails on any NEW missing file, so this list can only shrink.
+assets/videos/brand-story.mp4
+assets/videos/design-collaboration.mp4

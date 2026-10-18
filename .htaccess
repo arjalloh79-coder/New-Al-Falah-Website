@@ -3,4 +3,34 @@
 Options -Indexes
 RewriteEngine On
 
+# Force HTTPS (uncomment after SSL is active)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Pretty 404
 ErrorDocument 404 /404.html
+
+# Protect server-only files, data and repo tooling (never downloadable)
+RewriteRule ^data/ - [F,L]
+RewriteRule ^api/config(\.local(\.example)?)?\.php$ - [F,L]
+RewriteRule ^(scripts|docs|\.github|\.git)(/|$) - [F,L]
+RewriteRule ^(README|DEPLOY|CONTRIBUTING|LICENSE)\.md$ - [F,L]
+RewriteRule \.(db|sqlite3?|sql|log|bak|zip|tar|gz)$ - [F,L]
+
+# Security headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Cache static assets
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType video/mp4 "access plus 1 month"
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType application/javascript "access plus 1 week"
+</IfModule>
